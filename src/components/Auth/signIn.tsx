@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from "axios";
 
 function Copyright(props: any) {
     return (
@@ -32,10 +33,24 @@ export default function SignIn() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        const formData = {
             email: data.get('email'),
             password: data.get('password'),
-        });
+        }
+        axios.post('/users/login',JSON.stringify(formData),{
+            headers: { "Content-Type": `application/json`}
+        }).then((res:any)=>{
+            console.log(res.data.token);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+
+            //따로빼기
+            axios.get('/users',res.data.token)
+                .then((response)=>{
+                    console.log(response);
+                    // localStorage.setItem('jwtToken',res.data.token);
+                })
+        })
+
     };
 
     return (

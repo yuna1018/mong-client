@@ -10,6 +10,13 @@ module.exports = merge(common, {
         port: 3000,
         historyApiFallback: true,
         liveReload: true,
+        proxy: {
+            '/user': {
+                target: 'http://localhost:8000',
+                changeOrigin: true,
+                ws: true,
+            },
+        },
     },
     output: {
         filename: "[name].[contenthash].js",
